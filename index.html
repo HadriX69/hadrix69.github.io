@@ -78,7 +78,7 @@
 <body>
     <header>
         <h1>HadriX's Project</h1>
-        <input type="text" id="search-bar" placeholder="Rechercher un projet...">
+        <input type="text" id="search-bar" placeholder="Search a Project...">
     </header>
     <main>
         <section>
@@ -98,7 +98,7 @@
                     allProjects = data;
                     displayProjects();
                 })
-                .catch(error => console.error("Erreur de récupération des projets:", error));
+                .catch(error => console.error("Error retrieving projects:", error));
 
             const searchBar = document.getElementById("search-bar");
 
