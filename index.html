@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HadriX - Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+        }
+        #search-bar {
+            margin: 1rem;
+            padding: 0.5rem;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            gap: 2rem;
+        }
+        #projects-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 1200px;
+        }
+        .project {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .project h2 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+        .project p {
+            font-size: 1rem;
+            color: #666;
+        }
+        .project a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .project a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>HadriX's Project</h1>
+        <input type="text" id="search-bar" placeholder="Rechercher un projet...">
+    </header>
+    <main>
+        <section>
+            <h2>GitHub Project :</h2>
+            <div id="projects-container"></div>
+        </section>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const username = "HadriX69";
+            let allProjects = [];
+
+            // Récupérer les projets GitHub
+            fetch(`https://api.github.com/users/${username}/repos`)
+                .then(response => response.json())
+                .then(data => {
+                    allProjects = data;
+                    displayProjects();
+                })
+                .catch(error => console.error("Erreur de récupération des projets:", error));
+
+            const searchBar = document.getElementById("search-bar");
+
+            function displayProjects(filter = "") {
+                const container = document.getElementById("projects-container");
+                container.innerHTML = "";
+                allProjects.forEach(repo => {
+                    if (repo.name.toLowerCase().includes(filter.toLowerCase()) || (repo.description && repo.description.toLowerCase().includes(filter.toLowerCase()))) {
+                        const projectElement = document.createElement("div");
+                        projectElement.classList.add("project");
+                        projectElement.innerHTML = `
+                            <h2>${repo.name}</h2>
+                            <p>${repo.description || "Pas de description disponible."}</p>
+                            <a href="${repo.html_url}" target="_blank">Voir sur GitHub</a>
+                        `;
+                        container.appendChild(projectElement);
+                    }
+                });
+            }
+
+            searchBar.addEventListener("input", (e) => {
+                const searchValue = e.target.value;
+                displayProjects(searchValue);
+            });
+
+            // Initial display
+            displayProjects();
+        });
+    </script>
+</body>
+</html>
